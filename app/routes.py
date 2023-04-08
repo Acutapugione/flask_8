@@ -22,22 +22,26 @@ def students():
 @app.route('/students/create/', methods = ('GET', 'POST'))
 def student_create():
     if request.method == 'POST':
+
         #filling params
         name = request.form['name']
-        lesson_id = request.form['lesson_id']
+        # lesson_id = request.form['lesson_id']
                 
         #create instance
         stud = Students(
             name = name,
-            lesson_id = lesson_id
+            # lesson_id = lesson_id
         )
         
         #add to session db
         db.session.add(stud)
         
         #db commiting ( apply changes )
-        db.session.commit()
-
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(e)
         return redirect(url_for('students'))
 
     return render_template('create_student.html')
